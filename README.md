@@ -1,6 +1,5 @@
 # monitoring-with-docker-compose
 
-```markdown
 # Python App with Docker Monitoring Stack
 
 ![Python](https://img.shields.io/badge/python-3.9-blue)
