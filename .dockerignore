@@ -1,0 +1,29 @@
+# .dockerignore
+
+# Version control
+.git/
+.github/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.so
+.pytest_cache/
+
+# Environment files
+.env
+*.env
+.venv/
+
+# Monitoring files (exclude from app builds)
+monitoring/
+
+# Local files
+*.log
+*.swp
+
+# IDE
+.vscode/
+.idea/

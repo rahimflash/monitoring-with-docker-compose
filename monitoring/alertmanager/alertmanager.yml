@@ -1,0 +1,37 @@
+global:
+  smtp_from: 'twumgilbert7@gmail.com'
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_auth_username: 'twumgilbert7@gmail.com'
+  # smtp_auth_password: '${ALERTMANAGER_GMAIL_PASSWORD}' 
+  smtp_auth_password: 'teroprgxzbazimwz'
+  smtp_require_tls: true
+
+route:
+  receiver: 'gmail-notifications'
+  group_by: [alertname]
+  group_wait: 10s
+  group_interval: 5m
+  repeat_interval: 2h
+
+receivers:
+- name: 'gmail-notifications'
+  email_configs:
+  - to: 'twumgilbert7@gmail.com'
+    send_resolved: true
+    headers:
+      subject: 'Alert: {{ .Status | toUpper }} - {{ .CommonLabels.alertname }}'
+    html: |
+      <h2>{{ .Status | toUpper }} - {{ .CommonLabels.alertname }}</h2>
+      <p><strong>Severity:</strong> {{ .CommonLabels.severity }}</p>
+      <p><strong>Summary:</strong> {{ .CommonAnnotations.summary }}</p>
+      <p><strong>Description:</strong> {{ .CommonAnnotations.description }}</p>
+      <p><strong>Details:</strong></p>
+      <ul>
+        {{ range .Alerts }}
+        <li>
+          <strong>Instance:</strong> {{ .Labels.instance }}<br>
+          <strong>Time:</strong> {{ .StartsAt.Format "2006-01-02 15:04:05 UTC" }}<br>
+          {{ if .Annotations.message }}<strong>Message:</strong> {{ .Annotations.message }}{{ end }}
+        </li>
+        {{ end }}
+      </ul>

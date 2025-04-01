@@ -1,0 +1,47 @@
+groups:
+- name: alert_rules
+  rules:
+  - alert: HighMemoryUsage
+    expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High memory usage on {{ $labels.instance }}"
+      description: "Memory usage is {{ $value }}%"
+
+  - alert: HighCPUUsage
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High CPU usage on {{ $labels.instance }}"
+      description: "CPU usage is {{ $value }}%"
+
+  - alert: HighRequestLatency
+    expr: histogram_quantile(0.95, sum(rate(http_request_latency_seconds_bucket[5m])) by (le, endpoint)) > 1    
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High latency on {{ $labels.endpoint }}"
+      description: "95th percentile latency is {{ $value }} seconds"
+
+  - alert: ContainerDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Container {{ $labels.instance }} is down"
+      description: "{{ $labels.job }} on {{ $labels.instance }} has been down for more than 1 minute"
+
+  - alert: HighErrorRate
+    expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High error rate detected on {{ $labels.instance }}"
+      description: "More than {{ $value }}% requests failed in the last minute"

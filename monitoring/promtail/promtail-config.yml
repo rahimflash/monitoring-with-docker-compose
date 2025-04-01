@@ -1,0 +1,56 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+# scrape_configs:
+# - job_name: system
+#   static_configs:
+#   - targets:
+#       - localhost
+#     labels:
+#       job: varlogs
+#       __path__: /var/log/*log
+
+# - job_name: containers
+#   static_configs:
+#   - targets:
+#       - localhost
+#     labels:
+#       job: containerlogs
+#       __path__: /var/lib/docker/containers/*/*-json.log
+
+scrape_configs:
+- job_name: docker
+  docker_sd_configs:
+    - host: unix:///var/run/docker.sock
+      refresh_interval: 5s
+      # filters:
+      #   - name: label
+      #     values: ["logging=promtail"]
+  relabel_configs:
+    # Extract container name (removes leading '/')
+    - source_labels: ['__meta_docker_container_name']
+      target_label: 'container'
+      regex: '/(.*)'
+      replacement: '${1}'
+    # Extract Docker Compose service name
+    - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
+      target_label: 'service'
+    - source_labels: ['__meta_docker_container_log_stream']
+      target_label: 'logstream'
+    - source_labels: ['__meta_docker_container_label_logging_jobname']
+      target_label: 'job'
+    # Add hostname
+    - source_labels: ['__meta_docker_container_name']
+      target_label: 'host'
+      replacement: '$HOSTNAME'
+    # Drop system containers (optional)
+    - source_labels: ['__meta_docker_container_name']
+      regex: '/?(promtail|loki|grafana|alertmanager)'
+      action: drop
