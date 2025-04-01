@@ -4,7 +4,7 @@
 # Python App with Docker Monitoring Stack
 
 ![Python](https://img.shields.io/badge/python-3.9-blue)
-![Docker](https://img.shields.io/badge/docker-compose-%230db7ed)
+![Docker](https://img.shields.io/badge/docker_compose-%230db7ed)
 ![Prometheus](https://img.shields.io/badge/prometheus-%23e6522c)
 ![Grafana](https://img.shields.io/badge/grafana-%23f46800)
 ![Loki](https://img.shields.io/badge/loki-%235C2D91)
