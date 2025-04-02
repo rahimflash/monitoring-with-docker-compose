@@ -34,7 +34,7 @@ graph TD
 
 ```bash
 # Start the full stack
-docker compose up -d
+docker compose -f docker-compose-monitoring.yml up --build -d
 
 # Access services:
 # - App:         http://localhost:5000
