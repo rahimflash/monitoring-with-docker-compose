@@ -3,7 +3,7 @@ global:
   smtp_smarthost: 'smtp.gmail.com:587'
   smtp_auth_username: 'twumgilbert7@gmail.com'
   # smtp_auth_password: '${ALERTMANAGER_GMAIL_PASSWORD}' 
-  smtp_auth_password: 'teroprgxzbazimwz'
+  smtp_auth_password: 'XXXXX'
   smtp_require_tls: true
 
 route:
